@@ -77,3 +77,45 @@ class ToolCreate(BaseModel):
 class ToolResponseModel(ToolCreate):
     class Config:
         from_attributes = True
+
+class ToolParameter(BaseModel):
+    type: str
+    required: bool
+
+class ToolAuthenticationDef(BaseModel):
+    type: str
+
+class APIToolCreate(BaseModel):
+    id: Optional[str] = None
+    name: str
+    description: Optional[str] = None
+    type: str
+    method: str
+    url: str
+    
+    cache_ttl_minutes: Optional[int] = 30
+    auth_tool_id: Optional[str] = None
+    
+    headers: Optional[Dict[str, str]] = {}
+    request_params: Optional[Dict[str, str]] = {}
+    response_params: Optional[Dict[str, str]] = {}
+    body_schema: Optional[Dict[str, Any]] = {}
+    timeout_seconds: Optional[int] = 10
+    retries: Optional[int] = 0
+
+class WorkflowStep(BaseModel):
+    tools: Optional[List[str]] = None
+    next: Optional[List[str]] = None
+
+class WorkflowDef(BaseModel):
+    required: Optional[List[str]] = None
+    steps: Dict[str, WorkflowStep]
+
+class SkillCreate(BaseModel):
+    id: Optional[str] = None
+    name: str
+    description: Optional[str] = None
+    prompt: str
+    category: Optional[str] = None
+    tools: Optional[List[Any]] = None
+    workflow: WorkflowDef
